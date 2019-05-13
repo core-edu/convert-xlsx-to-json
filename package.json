@@ -1,0 +1,27 @@
+{
+  "name": "convert-xlsx-to-json",
+  "version": "1.0.0",
+  "description": "A simple nodeJS application to get a JSON from an xlsx",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/core-edu/convert-xlsx-to-json.git"
+  },
+  "author": "Lucas Duarte",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/core-edu/convert-xlsx-to-json/issues"
+  },
+  "homepage": "https://github.com/core-edu/convert-xlsx-to-json#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "express": "^4.16.4",
+    "jquery": "^3.4.1",
+    "path": "^0.12.7",
+    "xlsx-style": "^0.8.13"
+  }
+}
