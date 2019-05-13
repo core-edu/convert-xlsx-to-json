@@ -8,7 +8,8 @@ var compression = require('compression');
 const port = process.env.PORT || 8000;
 
 app.use(compression());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use('/images', express.static('images'));
 app.use('/node_modules', express.static('node_modules'));
 
