@@ -9,7 +9,7 @@ This is a simple nodeJS application to get a JSON from an xlsx
 #### Users Resources
 
 ##### POST REGION
-- **[<code>POST</code> users]()**
+- **[<code>POST</code> users](https://github.com/core-edu/convert-xlsx-to-json/blob/master/doc/Users.md)**
 
 ## Pre-Requisites
 
