@@ -2,12 +2,15 @@
 
 <input type="file" id="my_file_input" />
 <div id='my_file_output'></div>
+<br>
+<span></span>
+<br>
 <div id="container"></div>
 
 <script type="text/javascript" src="node_modules\xlsx-style\dist\xlsx.core.min.js"></script>
 <script type="text/javascript" src="node_modules\jquery\dist\jquery.min.js"></script>
 <script type="text/javascript">
-    var oFileIn;
+    let oFileIn;
 
     $(function () {
         oFileIn = document.getElementById('my_file_input');
@@ -18,63 +21,55 @@
 
 
     function filePicked(oEvent) {
-        // Get The File From The Input
-        var oFile = oEvent.target.files[0];
-        var sFilename = oFile.name;
-        // Create A File Reader HTML5
-        var reader = new FileReader();
+        // Get file and file name from input
+        const oFile = oEvent.target.files[0];
+        const sFilename = oFile.name;
 
+        // Create a HTML5 file reader
+        let reader = new FileReader();
+        reader.onload = setOnloadCallback(oFile);
 
-        // Ready The Event For When A File Gets Selected
-        reader.onload = function (e) {
-            var users = { list: [] };
-            var data = e.target.result;
-            var cfb = XLSX.read(data, { type: 'binary' });
-            console.log(cfb)
-            cfb.SheetNames.forEach(function (sheetName) {
-                // Obtain The Current Row As CSV
-                var sCSV = XLS.utils.make_csv(cfb.Sheets[sheetName]);
-                var oJS = XLS.utils.sheet_to_json(cfb.Sheets[sheetName]);
-
-                oJS = cleanValues(oJS);
-
-                var newUsers = [];
-                newUsers.push.apply(users.list, oJS)
-
-                console.log(oJS);
-            });
-
-            const usersJson = JSON.stringify(users);
-
-            $.post("/users", { usersJson }, function (result) {
-                $("span").html(result);
-                downloadObjectAsJson(users, "data.json");
-            });
-        };
-
-        // Tell JS To Start Reading The File.. You could delay this if desired
+        // Call setOnloadCallback function
         reader.readAsBinaryString(oFile);
     }
 
-    function cleanValues(list) {
-        list.map((object) => {
-            Object.keys(object).map((key) => {
-                object[key] = object[key].replace(key + ': ', '');
-            });
-        });
+    const setOnloadCallback = (oFile) => {
+        return (oFile) => {
+            let users = [];
+            const data = oFile.target.result;
 
-        return list;
+            // Reading worksheet binaries
+            const cfb = XLSX.read(data, { type: 'binary' });
+            // Worksheets loop (intern tabs)
+            cfb.SheetNames.forEach(function (sheetName) {
+                // Get json result by Sheet (inter tab)
+                var resultJson = XLS.utils.sheet_to_json(cfb.Sheets[sheetName]);
+                // Merge the second array into the first one
+                Array.prototype.push.apply(users, resultJson);
+            });
+
+            const usersJson = JSON.stringify({ list: users });
+
+            // POST to save in intern file app/data/data.json
+            $.post("/users", { usersJson }, function (result) {
+                $("span").html(result);
+
+                // Show a button to download data.json
+                showDownloadButton(users, "data.json");
+            });
+        };
     }
 
-    function downloadObjectAsJson(exportObj, exportName) {
+    const showDownloadButton = (exportObj, exportName) => {
+        //encoding data to download through button
         var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
 
-        var a = document.createElement('a');
-        a.href = 'data:' + data;
-        a.download = exportName;
-        a.innerHTML = 'download JSON';
-
+        //creating button in HTML
+        var downloadButton = document.createElement('a');
+        downloadButton.href = 'data:' + data;
+        downloadButton.download = exportName;
+        downloadButton.innerHTML = 'Download JSON';
         var container = document.getElementById('container');
-        container.appendChild(a);
+        container.appendChild(downloadButton);
     }
 </script>
