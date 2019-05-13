@@ -36,6 +36,8 @@
                 var sCSV = XLS.utils.make_csv(cfb.Sheets[sheetName]);
                 var oJS = XLS.utils.sheet_to_json(cfb.Sheets[sheetName]);
 
+                oJS = cleanValues(oJS);
+
                 var newUsers = [];
                 newUsers.push.apply(users.list, oJS)
 
@@ -52,6 +54,16 @@
 
         // Tell JS To Start Reading The File.. You could delay this if desired
         reader.readAsBinaryString(oFile);
+    }
+
+    function cleanValues(list) {
+        list.map((object) => {
+            Object.keys(object).map((key) => {
+                object[key] = object[key].replace(key + ': ', '');
+            });
+        });
+
+        return list;
     }
 
     function downloadObjectAsJson(exportObj, exportName) {

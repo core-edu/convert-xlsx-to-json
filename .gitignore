@@ -62,3 +62,6 @@ typings/
 
 # vs code configs
 .vscode
+
+# data json
+app/data/data.json
